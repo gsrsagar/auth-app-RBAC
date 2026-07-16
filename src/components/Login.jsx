@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useAuth } from '../context/AuthContext';
 import { useNavigate } from 'react-router-dom';
 /**
@@ -11,9 +11,18 @@ import { useNavigate } from 'react-router-dom';
 * 4. Failure → show alert (can be enhanced with toast/error state)
 */
 const Login = () => {
+
+    const navigate = useNavigate();
+    const { user } = useAuth();
+    useEffect(() => {
+        const token = localStorage.getItem("accessToken");
+        if (token) {
+            navigate("/dashboard");
+        }
+    }, [])
     // ---------- STATE ----------
     const [form, setForm] = useState({
-        email: '',
+        emailid: '',
         password: '',
     });
 
@@ -22,7 +31,7 @@ const Login = () => {
     // ---------- HOOKS ----------
     const { login } = useAuth();
 
-    const navigate = useNavigate();
+
     // ---------- HANDLERS ----------
     const handleChange = (e) => {
         const { name, value } = e.target;
@@ -40,7 +49,7 @@ const Login = () => {
         e.preventDefault();
 
         // Basic validation
-        if (!form.email || !form.password) {
+        if (!form.emailid || !form.password) {
             setError('Please fill in all fields');
             return;
         }
@@ -79,7 +88,7 @@ const Login = () => {
                     <label htmlFor="email">Email</label>
                     <input
                         id="email"
-                        name="email"
+                        name="emailid"
                         type="email"
                         placeholder="Enter your email"
                         value={form.email}
@@ -92,8 +101,8 @@ const Login = () => {
                     <label htmlFor="password">Password</label>
                     <input
                         id="password"
-
                         type="password"
+                        name="password"
                         placeholder="Enter your password"
                         value={form.password}
                         onChange={handleChange}
